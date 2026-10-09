@@ -1,45 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MEMORY NOT FOUND // NEKYA</title>
-<style>
-:root{--bg:#030303;--text:#fff;--muted:#666;--dim:#3b3b3b;--red:#8d0000;--red-bright:#b00000;--red-dark:#650000;--grid:rgba(255,255,255,.03);--panel:rgba(4,4,4,.72);--border:#3e0000;--shadow:rgba(0,0,0,.5)}
-body.fracture-theme{--bg:#e7e3dc;--text:#141414;--muted:#625d56;--dim:#8e877d;--red:#760000;--red-bright:#a00000;--red-dark:#5c0000;--grid:rgba(0,0,0,.055);--panel:rgba(238,234,227,.78);--border:#9c5b55;--shadow:rgba(45,35,30,.18)}
-html.pre-fracture body{--bg:#e7e3dc;--text:#141414;--muted:#625d56;--dim:#8e877d;--red:#760000;--red-bright:#a00000;--red-dark:#5c0000;--grid:rgba(0,0,0,.055);--panel:rgba(238,234,227,.78);--border:#9c5b55;--shadow:rgba(45,35,30,.18)}
-*{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;display:grid;place-items:center;padding:30px;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;overflow:hidden;transition:background .4s,color .4s}.grid{position:fixed;inset:-5%;opacity:.12;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:55px 55px;transition:transform .12s linear}.glow{position:fixed;width:650px;height:650px;border-radius:50%;background:radial-gradient(circle,rgba(120,0,0,.18),transparent 65%);filter:blur(10px);pointer-events:none}.theme{position:fixed;right:24px;top:24px;z-index:3;width:42px;height:42px;border:1px solid var(--border);background:var(--panel);color:var(--text);font-size:18px;backdrop-filter:blur(12px);cursor:pointer;transition:.25s}.theme:hover{border-color:var(--red);color:var(--red)}main{position:relative;z-index:2;width:min(760px,100%);padding:34px;background:var(--panel);border:1px solid color-mix(in srgb,var(--border) 65%,transparent);backdrop-filter:blur(8px);box-shadow:0 25px 90px var(--shadow)}.code{font:10px monospace;letter-spacing:4px;color:var(--red-dark)}h1{margin-top:14px;font-size:clamp(65px,14vw,150px);line-height:.8;letter-spacing:-8px}h1 span{color:var(--red)}.line{height:1px;margin:30px 0;background:linear-gradient(90deg,var(--red),transparent)}p{max-width:580px;color:var(--muted);line-height:1.9}.small{margin-top:25px;font:9px monospace;letter-spacing:2px;color:var(--dim)}a{display:inline-block;margin-top:35px;padding:14px 20px;border:1px solid var(--red-dark);background:var(--red);color:white;text-decoration:none;font:10px monospace;letter-spacing:2px;transition:.25s}a:hover{background:var(--red-bright);box-shadow:0 0 30px rgba(150,0,0,.3);transform:translateY(-2px)}a:focus-visible,.theme:focus-visible{outline:1px solid var(--red-bright);outline-offset:4px}@media(max-width:600px){main{padding:28px 22px}h1{letter-spacing:-5px}.theme{right:16px;top:16px}}
-</style>
-<script>
-(function(){
-    let theme="dark";
-    try{
-        const state=JSON.parse(localStorage.getItem("nekyaState")||"{}");
-        theme=state.theme||localStorage.getItem("nekyaTheme")||"dark";
-    }catch(_){theme=localStorage.getItem("nekyaTheme")||"dark";}
-    if(theme==="fracture") document.documentElement.classList.add("pre-fracture");
-})();
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050505">
+    <title>Memory Not Found // NEKYA</title>
+
+    <style>
+        :root {
+            --bg: #050505;
+            --panel: #090909;
+            --text: #f4f4f4;
+            --muted: #666666;
+            --border: #1a1a1a;
+            --red: #8b0000;
+            --red-bright: #bd0000;
+        }
+
+        body.fracture-theme {
+            --bg: #e9e5de;
+            --panel: #f1ede6;
+            --text: #161616;
+            --muted: #68625b;
+            --border: #c7c0b6;
+            --red: #760000;
+            --red-bright: #a60000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 30px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 20%, rgba(130,0,0,.12), transparent 38%),
+                var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            transition: background .3s ease, color .3s ease;
+        }
+
+        .grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .12;
+            background-image:
+                linear-gradient(rgba(127,127,127,.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(127,127,127,.08) 1px, transparent 1px);
+            background-size: 55px 55px;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            width: min(780px, 100%);
+            padding: 50px;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--panel) 90%, transparent);
+        }
+
+        .code {
+            color: var(--red);
+            font-family: monospace;
+            font-size: 10px;
+            letter-spacing: 4px;
+        }
+
+        h1 {
+            margin-top: 18px;
+            font-size: clamp(56px, 11vw, 120px);
+            line-height: .85;
+            letter-spacing: -6px;
+        }
+
+        h1 span {
+            color: var(--red);
+        }
+
+        .line {
+            height: 1px;
+            margin: 32px 0;
+            background: linear-gradient(90deg, var(--red), transparent);
+        }
+
+        p {
+            max-width: 570px;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 32px;
+            padding: 14px 20px;
+            border: 1px solid var(--red-bright);
+            background: var(--red);
+            color: white;
+            text-decoration: none;
+            font-family: monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        a:hover {
+            background: var(--red-bright);
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 34px 25px;
+            }
+
+            h1 {
+                letter-spacing: -4px;
+            }
+        }
+    </style>
+
+    <script>
+        try {
+            const legacyTheme = localStorage.getItem("nekyaTheme");
+            const stableState = JSON.parse(localStorage.getItem("nekyaStateStable3") || "{}");
+            const theme = stableState.theme || legacyTheme;
+
+            if (theme === "fracture") {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add("fracture-theme");
+                    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#e9e5de");
+                });
+            }
+        } catch (error) {
+            // 404 page remains usable without storage.
+        }
+    </script>
 </head>
 <body>
-<div class="grid" id="grid"></div><div class="glow" id="glow"></div>
-<button class="theme" id="theme" aria-label="Toggle theme" title="Toggle theme">◐</button>
-<main>
-<p class="code">ERROR // ARCHIVE PATH INVALID</p>
-<h1>MEMORY <span>NOT FOUND.</span></h1>
-<div class="line"></div>
-<p>The requested record does not exist, has been moved, or was removed from the archive.</p>
-<p class="small">STATUS // 404 // SIGNAL LOST</p>
-<a href="/nekya-website/">RETURN TO NEKYA</a>
-</main>
-<script>
-const body=document.body,button=document.getElementById("theme"),grid=document.getElementById("grid"),glow=document.getElementById("glow");
-let state={};try{state=JSON.parse(localStorage.getItem("nekyaState")||"{}")}catch(_){state={}}
-let theme=state.theme||localStorage.getItem("nekyaTheme")||"dark";
-function applyTheme(){const light=theme==="fracture";body.classList.toggle("fracture-theme",light);button.textContent=light?"◑":"◐";button.title=light?"Switch to Dark mode":"Switch to Fracture light mode";button.setAttribute("aria-label",button.title)}
-applyTheme();
-button.addEventListener("click",()=>{theme=theme==="fracture"?"dark":"fracture";state.theme=theme;localStorage.setItem("nekyaTheme",theme);localStorage.setItem("nekyaState",JSON.stringify(state));applyTheme()});
-document.addEventListener("mousemove",e=>{const x=(e.clientX/window.innerWidth-.5)*16,y=(e.clientY/window.innerHeight-.5)*16;grid.style.transform=`translate(${x}px,${y}px)`;glow.style.left=e.clientX-325+"px";glow.style.top=e.clientY-325+"px"});
-</script>
+    <div class="grid"></div>
+
+    <main>
+        <p class="code">ERROR // MEMORY INDEX FAILURE</p>
+        <h1>MEMORY <span>NOT FOUND.</span></h1>
+        <div class="line"></div>
+        <p>
+            The requested record does not exist, has been moved,
+            or was removed from the archive.
+        </p>
+        <a href="/nekya-website/">RETURN TO NEKYA</a>
+    </main>
 </body>
 </html>

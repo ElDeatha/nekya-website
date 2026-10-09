@@ -3,22 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEKYA</title>
     <meta name="description" content="NEKYA - Explore the psyche. Discover your Complex.">
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#050505">
+    <title>NEKYA</title>
+
+    <!-- Cache-busting version parameter prevents GitHub Pages/browser cache mismatches. -->
+    <link rel="stylesheet" href="style.css?v=stable-3">
 </head>
 <body>
 
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
-    <div id="mouse-glow"></div>
-    <div id="screen-glitch" class="screen-glitch"></div>
+    <!-- =====================================================
+         GLOBAL VISUAL LAYERS
+    ====================================================== -->
+    <div id="cursor-dot" aria-hidden="true"></div>
+    <div id="cursor-ring" aria-hidden="true"></div>
+    <div id="mouse-glow" aria-hidden="true"></div>
+    <div id="screen-glitch" class="screen-glitch" aria-hidden="true"></div>
 
-    <div id="boot-screen">
+    <div class="background" aria-hidden="true"></div>
+    <div class="grid-background" id="grid-background" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div id="ambient-particles" class="ambient-particles" aria-hidden="true"></div>
+
+
+    <!-- =====================================================
+         BOOT SCREEN
+    ====================================================== -->
+    <div id="boot-screen" class="boot-screen" aria-hidden="true">
         <div class="boot-container">
             <p class="boot-small">PSYCHE INTERFACE</p>
             <h1>NEKYA</h1>
             <div class="boot-line"></div>
+
             <div class="boot-data">
                 <p><span>CONNECTION</span><b>ESTABLISHED</b></p>
                 <p><span>PSYCHE</span><b>UNSTABLE</b></p>
@@ -26,17 +42,21 @@
                 <p><span>ARCHIVE</span><b>PARTIAL</b></p>
                 <p><span>UNKNOWN SIGNAL</span><b>DETECTED</b></p>
             </div>
-            <p class="boot-loading">ENTERING NEKYA<span id="boot-dots">...</span></p>
+
+            <p class="boot-loading">
+                ENTERING NEKYA<span id="boot-dots">...</span>
+            </p>
         </div>
     </div>
 
-    <div class="background"></div>
-    <div class="grid-background" id="grid-background"></div>
-    <div class="noise"></div>
-    <div id="ambient-particles" class="ambient-particles"></div>
 
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
     <nav id="navbar">
-        <a href="#home" class="logo">NEK<span>YA</span></a>
+        <a href="#home" class="logo" aria-label="NEKYA home">
+            NEK<span>YA</span>
+        </a>
 
         <div class="nav-links" id="nav-links">
             <a href="#home">Home</a>
@@ -44,15 +64,45 @@
             <a href="#complexes">Complexes</a>
             <a href="#lore">Lore</a>
             <a href="#development">Development</a>
-            <a href="https://www.roblox.com/games/97595999708831/Nekya" target="_blank" rel="noopener noreferrer" class="nav-play">Play</a>
+            <a
+                href="https://www.roblox.com/games/97595999708831/Nekya"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="nav-play"
+            >
+                Play
+            </a>
         </div>
 
         <div class="nav-controls">
-            <button id="theme-toggle" class="icon-button theme-toggle" aria-label="Toggle theme" title="Toggle Fracture Mode"><span id="theme-icon">◐</span></button>
-            <button id="mobile-toggle" class="icon-button mobile-toggle" aria-label="Open navigation"><span></span><span></span><span></span></button>
+            <button
+                id="theme-toggle"
+                class="icon-button theme-toggle"
+                type="button"
+                aria-label="Switch theme"
+                title="Switch theme"
+            >
+                <span id="theme-icon">◐</span>
+            </button>
+
+            <button
+                id="mobile-toggle"
+                class="icon-button mobile-toggle"
+                type="button"
+                aria-label="Open navigation"
+                aria-expanded="false"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
+
+    <!-- =====================================================
+         SECTION TRACKER
+    ====================================================== -->
     <aside class="section-tracker" id="section-tracker" aria-label="Section navigation">
         <a href="#world" data-track="world"><span>01</span><b>WORLD</b></a>
         <a href="#complexes" data-track="complexes"><span>02</span><b>COMPLEX</b></a>
@@ -62,264 +112,603 @@
         <a href="#status" data-track="status"><span>06</span><b>SYSTEM</b></a>
     </aside>
 
-    <section id="home" class="hero" data-section="home">
-        <div class="hero-content">
-            <p class="hero-code">[ PSYCHE // 001 ]</p>
-            <h1>NEK<span>YA</span></h1>
-            <p class="hero-line">THE PSYCHE DOES NOT STAY BURIED.</p>
-            <p class="hero-description">Explore. <span>Fight.</span> Discover. <span>Become.</span></p>
-            <div class="hero-buttons">
-                <a href="https://www.roblox.com/games/97595999708831/Nekya" target="_blank" rel="noopener noreferrer" class="primary-button">ENTER NEKYA ↗</a>
-                <a href="#world" class="secondary-button">DESCEND</a>
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+    <main>
+        <section id="home" class="hero" data-section="home">
+            <div class="hero-content">
+                <p class="hero-code">[ PSYCHE // 001 ]</p>
+                <h1>NEK<span>YA</span></h1>
+                <p class="hero-line">THE PSYCHE DOES NOT STAY BURIED.</p>
+                <p class="hero-description">
+                    Explore. <span>Fight.</span> Discover. <span>Become.</span>
+                </p>
+
+                <div class="hero-buttons">
+                    <a
+                        href="https://www.roblox.com/games/97595999708831/Nekya"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="primary-button"
+                    >
+                        ENTER NEKYA ↗
+                    </a>
+
+                    <a href="#world" class="secondary-button">
+                        DESCEND
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="scroll-indicator"><span></span>DESCEND</div>
-    </section>
 
-    <section id="world" class="section reveal" data-section="world">
-        <p class="section-number">01 // WORLD</p>
-        <h2>SOMETHING IS <span>WRONG.</span></h2>
-        <div class="section-line"></div>
-        <p class="large-description">NEKYA is a psychological progression experience built around mysterious manifestations known as <strong>Complexes.</strong> Power is not simply obtained. It is discovered.</p>
+            <div class="scroll-indicator" aria-hidden="true">
+                <span></span>
+                DESCEND
+            </div>
+        </section>
 
-        <div class="world-grid">
-            <button class="world-card" data-world="beginning">
-                <p>AREA // 01</p><h3>BEGINNING</h3><span>Every descent begins somewhere.</span>
-            </button>
-            <button class="world-card" data-world="forest">
-                <p>AREA // 02</p><h3>FORGOTTEN FOREST</h3><span>Something was left here for too long.</span>
-            </button>
-            <button class="world-card" data-world="ruins">
-                <p>AREA // 03</p><h3>ANCIENT RUINS</h3><span>What disappeared did not leave quietly.</span>
-            </button>
-            <button class="world-card abyss-card" data-world="abyss">
-                <p>AREA // 04</p><h3>ABYSS</h3><span>Depth is not measured in distance.</span>
-            </button>
-        </div>
 
-        <div class="loop-grid">
-            <div class="loop-card"><p>01</p><h3>EXPLORE</h3><span>Enter forgotten places and uncover what was hidden.</span></div>
-            <div class="loop-card"><p>02</p><h3>FIGHT</h3><span>Face enemies shaped by a world that refuses to explain itself.</span></div>
-            <div class="loop-card"><p>03</p><h3>DISCOVER</h3><span>Secrets reward those who actually pay attention.</span></div>
-            <div class="loop-card"><p>04</p><h3>EVOLVE</h3><span>Your Complex is not necessarily its final form.</span></div>
-        </div>
-    </section>
+        <!-- =================================================
+             WORLD
+        ================================================== -->
+        <section id="world" class="section reveal" data-section="world">
+            <p class="section-number">01 // WORLD</p>
+            <h2>SOMETHING IS <span>WRONG.</span></h2>
+            <div class="section-line"></div>
 
-    <section id="complexes" class="section reveal" data-section="complexes">
-        <p class="section-number">02 // COMPLEX SYSTEM</p>
-        <h2>YOUR MIND BECOMES <span>POWER.</span></h2>
-        <div class="section-line"></div>
-        <p class="section-description">Complexes are psychological manifestations. Every one behaves differently. Every one means something. Select a file to inspect it.</p>
+            <p class="large-description">
+                NEKYA is a psychological progression experience built around
+                mysterious manifestations known as <strong>Complexes.</strong>
+                Power is not simply obtained. It is discovered.
+            </p>
 
-        <div class="complex-grid">
-            <button class="complex-card complex-drive" data-complex="drive">
-                <span class="complex-signature"></span><p class="complex-id">CX-01</p><h3>DRIVE</h3><p>Forward movement without hesitation.</p><small>OPEN DOSSIER ↗</small>
-            </button>
-            <button class="complex-card complex-apathy" data-complex="apathy">
-                <span class="complex-signature"></span><p class="complex-id">CX-02</p><h3>APATHY</h3><p>When absence itself becomes strength.</p><small>OPEN DOSSIER ↗</small>
-            </button>
-            <button class="complex-card complex-imprint" data-complex="imprint">
-                <span class="complex-signature"></span><p class="complex-id">CX-03</p><h3>IMPRINT</h3><p>What remains can become permanent.</p><small>OPEN DOSSIER ↗</small>
-            </button>
-            <button class="complex-card complex-fixation" data-complex="fixation">
-                <span class="complex-signature"></span><p class="complex-id">CX-04</p><h3>FIXATION</h3><p>One target. One thought. Nothing else.</p><small>OPEN DOSSIER ↗</small>
-            </button>
-            <button class="complex-card complex-projection" data-complex="projection">
-                <span class="complex-signature"></span><p class="complex-id">CX-05</p><h3>PROJECTION</h3><p>The mind pushes itself onto reality.</p><small>OPEN DOSSIER ↗</small>
-            </button>
-            <button class="complex-card complex-shadow" data-complex="shadow">
-                <span class="complex-signature"></span><p class="complex-id">CX-06</p><h3>SHADOW</h3><p>What you reject does not disappear.</p><small>OPEN DOSSIER ↗</small>
-            </button>
-
-            <button class="complex-card secret-card" id="secret-card" data-complex="unknown">
-                <span class="complex-signature"></span><p class="complex-id">CX-??</p><h3 id="secret-title">???</h3><p id="secret-description">DATA CORRUPTED.</p><span class="secret-signal" id="secret-signal">SIGNAL UNREADABLE</span>
-            </button>
-        </div>
-    </section>
-
-    <section id="lore" class="section reveal" data-section="lore">
-        <p class="section-number">03 // ARCHIVE</p>
-        <h2>RECOVERED <span>MEMORIES.</span></h2>
-        <div class="section-line"></div>
-
-        <div class="archive-intro">
-            <p>Records recovered from within NEKYA. Some information is incomplete. Some information may have been intentionally removed.</p>
-            <span id="archive-integrity">ARCHIVE INTEGRITY // 24%</span>
-        </div>
-
-        <div class="archive-list">
-            <article class="archive-record" data-record-id="001">
-                <button class="record-header">
-                    <div><p>RECORD // 001</p><h3>THE BEGINNING</h3></div><span class="record-status">AVAILABLE</span>
+            <div class="world-grid">
+                <button class="world-card" type="button" data-world="beginning">
+                    <p>AREA // 01</p>
+                    <h3>BEGINNING</h3>
+                    <span>Every descent begins somewhere.</span>
+                    <small>OBSERVE</small>
                 </button>
-                <div class="record-content"><div><p>There is no confirmed point at which the first Complex appeared. Some records suggest Complexes were discovered. Others suggest they were always present, waiting for someone capable of recognizing them.</p></div></div>
-            </article>
 
-            <article class="archive-record locked-record" data-record-id="002" data-requires="complex_viewed">
-                <button class="record-header">
-                    <div><p>RECORD // 002</p><h3>COMPLEX MANIFESTATION</h3></div><span class="record-status">LOCKED</span>
+                <button class="world-card" type="button" data-world="forest">
+                    <p>AREA // 02</p>
+                    <h3>FORGOTTEN FOREST</h3>
+                    <span>Something was left here for too long.</span>
+                    <small>OBSERVE</small>
                 </button>
-                <div class="record-content"><div><p>A Complex is not simply an ability. It is an expression. Something psychological given form, behavior and consequence. The same power does not necessarily create the same person.</p></div></div>
-            </article>
 
-            <article class="archive-record locked-record decrypt-record" data-record-id="003" data-requires="world_observed">
-                <button class="record-header">
-                    <div><p>RECORD // 003</p><h3>THE ABYSS</h3></div><span class="record-status">LOCKED</span>
+                <button class="world-card" type="button" data-world="ruins">
+                    <p>AREA // 03</p>
+                    <h3>ANCIENT RUINS</h3>
+                    <span>What disappeared did not leave quietly.</span>
+                    <small>OBSERVE</small>
                 </button>
-                <div class="record-content"><div><p>The Abyss appears to exist beneath the known world. That description may be inaccurate. Witnesses repeatedly describe the sensation of descending even when no physical movement occurs. Further records are corrupted.</p></div></div>
-            </article>
 
-            <article class="archive-record restricted-record locked-record decrypt-record" id="restricted-record" data-record-id="unknown" data-requires="secret">
-                <button class="record-header">
-                    <div><p>RECORD // ???</p><h3>████████ INCIDENT</h3></div><span class="record-status" id="restricted-status">RESTRICTED</span>
+                <button class="world-card abyss-card" type="button" data-world="abyss">
+                    <p>AREA // 04</p>
+                    <h3>ABYSS</h3>
+                    <span>Depth is not measured in distance.</span>
+                    <small>OBSERVE</small>
                 </button>
-                <div class="record-content"><div><p id="restricted-text">ACCESS DENIED. This file has been removed from the archive.</p></div></div>
-            </article>
-        </div>
-    </section>
-
-    <section id="development" class="section reveal" data-section="development">
-        <p class="section-number">04 // DEVELOPMENT</p>
-        <h2>BUILD <span>0.1.</span></h2>
-        <div class="section-line"></div>
-
-        <div class="development-layout">
-            <div class="development-main">
-                <p class="development-label">CURRENT PHASE</p>
-                <h3>FOUNDATION</h3>
-                <p>NEKYA v0.1 is focused on creating the systems the rest of the game will depend on. Small first. Strong foundation. Expand later.</p>
             </div>
-            <div class="development-systems">
-                <div><span>01</span><p>COMBAT SYSTEMS</p></div>
-                <div><span>02</span><p>COMPLEX SYSTEM</p></div>
-                <div><span>03</span><p>WORLD FOUNDATION</p></div>
-                <div><span>04</span><p>PROGRESSION</p></div>
-                <div><span>05</span><p>ENEMIES & BOSS</p></div>
-                <div><span>06</span><p>SECRETS</p></div>
-            </div>
-        </div>
 
-        <div class="update-log">
-            <div class="update-log-head">
-                <div><p>VERSION LOG</p><h3>BUILD 0.1</h3></div>
-                <span>ACTIVE DEVELOPMENT</span>
-            </div>
-            <div class="update-entry"><span>0.1.04</span><p>Archive interface, secrets and website systems expanded.</p><b>CURRENT</b></div>
-            <div class="update-entry"><span>0.1.03</span><p>Apathy combat work and presentation systems developed.</p><b>DEV</b></div>
-            <div class="update-entry"><span>0.1.02</span><p>Complex system foundation established.</p><b>CORE</b></div>
-            <div class="update-entry"><span>0.1.01</span><p>Beginning, Forgotten Forest, Ancient Ruins and Abyss defined.</p><b>WORLD</b></div>
-        </div>
-    </section>
+            <div class="loop-grid">
+                <div class="loop-card">
+                    <p>01</p>
+                    <h3>EXPLORE</h3>
+                    <span>Enter forgotten places and uncover what was hidden.</span>
+                </div>
 
-    <section id="access" class="section reveal" data-section="access">
-        <p class="section-number">05 // ACCESS</p>
-        <h2>ENTER <span>NEKYA.</span></h2>
-        <div class="section-line"></div>
+                <div class="loop-card">
+                    <p>02</p>
+                    <h3>FIGHT</h3>
+                    <span>Face enemies shaped by a world that refuses to explain itself.</span>
+                </div>
 
-        <div class="access-panel">
-            <div class="access-main">
-                <p class="access-label">PROJECT 001</p>
-                <h3>NEKYA</h3>
-                <p>Psychology. Combat. Progression. Discovery. Secrets.</p>
-                <div class="tags"><span>ROBLOX</span><span>RPG</span><span>PSYCHOLOGY</span><span>COMPLEXES</span><span>DEVELOPMENT</span></div>
-                <a href="https://www.roblox.com/games/97595999708831/Nekya" target="_blank" rel="noopener noreferrer" class="play-button">PLAY NEKYA ↗</a>
-            </div>
-            <div class="developer-panel">
-                <p class="access-label">DEVELOPER</p>
-                <h3>ELDEATHA</h3>
-                <p>Creator of NEKYA.</p>
-                <a href="https://www.roblox.com/users/1854066173/profile" target="_blank" rel="noopener noreferrer" class="developer-button">ROBLOX PROFILE ↗</a>
-            </div>
-        </div>
-    </section>
+                <div class="loop-card">
+                    <p>03</p>
+                    <h3>DISCOVER</h3>
+                    <span>Secrets reward those who actually pay attention.</span>
+                </div>
 
-    <section id="status" class="section reveal" data-section="status">
-        <p class="section-number">06 // SYSTEM</p>
-        <h2>CURRENT <span>STATUS.</span></h2>
-        <div class="section-line"></div>
-
-        <div class="terminal">
-            <div class="terminal-header">
-                <div class="terminal-lights"><span></span><span></span><span></span></div>
-                <p>NEKYA_CORE.exe</p>
+                <div class="loop-card">
+                    <p>04</p>
+                    <h3>EVOLVE</h3>
+                    <span>Your Complex is not necessarily its final form.</span>
+                </div>
             </div>
-            <div class="terminal-body">
-                <p><b>></b> PROJECT ............. <span>NEKYA</span></p>
-                <p><b>></b> BUILD ............... <span>0.1</span></p>
-                <p><b>></b> STATUS .............. <span>IN DEVELOPMENT</span></p>
-                <p><b>></b> COMPLEX SYSTEM ...... <span>ONLINE</span></p>
-                <p><b>></b> ARCHIVE ............. <span id="archive-status">PARTIAL</span></p>
-                <p><b>></b> UNKNOWN DATA ........ <span id="unknown-status">LOCKED</span></p>
-                <p class="terminal-animation"><b>></b> <span id="terminal-text"></span><i>█</i></p>
-            </div>
-        </div>
-    </section>
+        </section>
 
+
+        <!-- =================================================
+             COMPLEXES
+        ================================================== -->
+        <section id="complexes" class="section reveal" data-section="complexes">
+            <p class="section-number">02 // COMPLEX SYSTEM</p>
+            <h2>YOUR MIND BECOMES <span>POWER.</span></h2>
+            <div class="section-line"></div>
+
+            <p class="section-description">
+                Complexes are psychological manifestations. Every one behaves
+                differently. Every one means something. Select a file to inspect it.
+            </p>
+
+            <div class="complex-grid">
+                <button class="complex-card complex-drive" type="button" data-complex="drive">
+                    <span class="complex-signature" aria-hidden="true"></span>
+                    <p class="complex-id">CX-01</p>
+                    <h3>DRIVE</h3>
+                    <p>Forward movement without hesitation.</p>
+                    <small>OPEN DOSSIER ↗</small>
+                </button>
+
+                <button class="complex-card complex-apathy" type="button" data-complex="apathy">
+                    <span class="complex-signature" aria-hidden="true"></span>
+                    <p class="complex-id">CX-02</p>
+                    <h3>APATHY</h3>
+                    <p>When absence itself becomes strength.</p>
+                    <small>OPEN DOSSIER ↗</small>
+                </button>
+
+                <button class="complex-card complex-imprint" type="button" data-complex="imprint">
+                    <span class="complex-signature" aria-hidden="true"></span>
+                    <p class="complex-id">CX-03</p>
+                    <h3>IMPRINT</h3>
+                    <p>What remains can become permanent.</p>
+                    <small>OPEN DOSSIER ↗</small>
+                </button>
+
+                <button class="complex-card complex-fixation" type="button" data-complex="fixation">
+                    <span class="complex-signature" aria-hidden="true"></span>
+                    <p class="complex-id">CX-04</p>
+                    <h3>FIXATION</h3>
+                    <p>One target. One thought. Nothing else.</p>
+                    <small>OPEN DOSSIER ↗</small>
+                </button>
+
+                <button class="complex-card complex-projection" type="button" data-complex="projection">
+                    <span class="complex-signature" aria-hidden="true"></span>
+                    <p class="complex-id">CX-05</p>
+                    <h3>PROJECTION</h3>
+                    <p>The mind pushes itself onto reality.</p>
+                    <small>OPEN DOSSIER ↗</small>
+                </button>
+
+                <button class="complex-card complex-shadow" type="button" data-complex="shadow">
+                    <span class="complex-signature" aria-hidden="true"></span>
+                    <p class="complex-id">CX-06</p>
+                    <h3>SHADOW</h3>
+                    <p>What you reject does not disappear.</p>
+                    <small>OPEN DOSSIER ↗</small>
+                </button>
+
+                <button
+                    class="complex-card secret-card"
+                    id="secret-card"
+                    type="button"
+                    data-complex="unknown"
+                >
+                    <span class="complex-signature" aria-hidden="true"></span>
+                    <p class="complex-id">CX-??</p>
+                    <h3 id="secret-title">???</h3>
+                    <p id="secret-description">DATA CORRUPTED.</p>
+                    <span class="secret-signal" id="secret-signal">SIGNAL UNREADABLE</span>
+                </button>
+            </div>
+        </section>
+
+
+        <!-- =================================================
+             LORE ARCHIVE
+        ================================================== -->
+        <section id="lore" class="section reveal" data-section="lore">
+            <p class="section-number">03 // ARCHIVE</p>
+            <h2>RECOVERED <span>MEMORIES.</span></h2>
+            <div class="section-line"></div>
+
+            <div class="archive-intro">
+                <p>
+                    Records recovered from within NEKYA. Some information is incomplete.
+                    Some information may have been intentionally removed.
+                </p>
+                <span id="archive-integrity">ARCHIVE INTEGRITY // 25%</span>
+            </div>
+
+            <div class="archive-list">
+                <article class="archive-record" data-record-id="001">
+                    <button class="record-header" type="button">
+                        <div>
+                            <p>RECORD // 001</p>
+                            <h3>THE BEGINNING</h3>
+                        </div>
+                        <span class="record-status">AVAILABLE</span>
+                    </button>
+                    <div class="record-content">
+                        <div>
+                            <p>
+                                There is no confirmed point at which the first Complex appeared.
+                                Some records suggest Complexes were discovered. Others suggest they
+                                were always present, waiting for someone capable of recognizing them.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article
+                    class="archive-record locked-record"
+                    data-record-id="002"
+                    data-requires="complex_viewed"
+                >
+                    <button class="record-header" type="button">
+                        <div>
+                            <p>RECORD // 002</p>
+                            <h3>COMPLEX MANIFESTATION</h3>
+                        </div>
+                        <span class="record-status">LOCKED</span>
+                    </button>
+                    <div class="record-content">
+                        <div>
+                            <p>
+                                A Complex is not simply an ability. It is an expression.
+                                Something psychological given form, behavior and consequence.
+                                The same power does not necessarily create the same person.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article
+                    class="archive-record locked-record decrypt-record"
+                    data-record-id="003"
+                    data-requires="world_observed"
+                >
+                    <button class="record-header" type="button">
+                        <div>
+                            <p>RECORD // 003</p>
+                            <h3>THE ABYSS</h3>
+                        </div>
+                        <span class="record-status">LOCKED</span>
+                    </button>
+                    <div class="record-content">
+                        <div>
+                            <p>
+                                The Abyss appears to exist beneath the known world.
+                                That description may be inaccurate. Witnesses repeatedly describe
+                                the sensation of descending even when no physical movement occurs.
+                                Further records are corrupted.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article
+                    class="archive-record locked-record decrypt-record restricted-record"
+                    id="restricted-record"
+                    data-record-id="unknown"
+                    data-requires="secret"
+                >
+                    <button class="record-header" type="button">
+                        <div>
+                            <p>RECORD // ???</p>
+                            <h3>████████ INCIDENT</h3>
+                        </div>
+                        <span class="record-status" id="restricted-status">RESTRICTED</span>
+                    </button>
+                    <div class="record-content">
+                        <div>
+                            <p id="restricted-text">
+                                ACCESS DENIED. This file has been removed from the archive.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+
+        <!-- =================================================
+             DEVELOPMENT
+        ================================================== -->
+        <section id="development" class="section reveal" data-section="development">
+            <p class="section-number">04 // DEVELOPMENT</p>
+            <h2>BUILD <span>0.1.</span></h2>
+            <div class="section-line"></div>
+
+            <div class="development-layout">
+                <div class="development-main">
+                    <p class="development-label">CURRENT PHASE</p>
+                    <h3>FOUNDATION</h3>
+                    <p>
+                        NEKYA v0.1 is focused on creating the systems the rest of
+                        the game will depend on. Small first. Strong foundation.
+                        Expand later.
+                    </p>
+                </div>
+
+                <div class="development-systems">
+                    <div><span>01</span><p>COMBAT SYSTEMS</p></div>
+                    <div><span>02</span><p>COMPLEX SYSTEM</p></div>
+                    <div><span>03</span><p>WORLD FOUNDATION</p></div>
+                    <div><span>04</span><p>PROGRESSION</p></div>
+                    <div><span>05</span><p>ENEMIES & BOSS</p></div>
+                    <div><span>06</span><p>SECRETS</p></div>
+                </div>
+            </div>
+
+            <div class="update-log">
+                <div class="update-log-head">
+                    <div>
+                        <p class="development-label">SYSTEM LOG</p>
+                        <h3>BUILD HISTORY</h3>
+                    </div>
+                    <span>LIVE DEVELOPMENT</span>
+                </div>
+
+                <div class="update-entry">
+                    <span>0.1.03</span>
+                    <p>Website interface rebuilt and stabilized.</p>
+                    <b>CURRENT</b>
+                </div>
+
+                <div class="update-entry">
+                    <span>0.1.02</span>
+                    <p>Complex archive and hidden psyche records connected.</p>
+                    <b>COMPLETE</b>
+                </div>
+
+                <div class="update-entry">
+                    <span>0.1.01</span>
+                    <p>Apathy combat presentation and supporting effects developed.</p>
+                    <b>IN PROGRESS</b>
+                </div>
+
+                <div class="update-entry">
+                    <span>0.1.00</span>
+                    <p>Core NEKYA foundation established.</p>
+                    <b>FOUNDATION</b>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =================================================
+             ACCESS
+        ================================================== -->
+        <section id="access" class="section reveal" data-section="access">
+            <p class="section-number">05 // ACCESS</p>
+            <h2>ENTER <span>NEKYA.</span></h2>
+            <div class="section-line"></div>
+
+            <div class="access-panel">
+                <div class="access-main">
+                    <p class="access-label">PROJECT 001</p>
+                    <h3>NEKYA</h3>
+                    <p>Psychology. Combat. Progression. Discovery. Secrets.</p>
+
+                    <div class="tags">
+                        <span>ROBLOX</span>
+                        <span>RPG</span>
+                        <span>PSYCHOLOGY</span>
+                        <span>COMPLEXES</span>
+                        <span>DEVELOPMENT</span>
+                    </div>
+
+                    <a
+                        href="https://www.roblox.com/games/97595999708831/Nekya"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="play-button"
+                    >
+                        PLAY NEKYA ↗
+                    </a>
+                </div>
+
+                <div class="developer-panel">
+                    <p class="access-label">DEVELOPER</p>
+                    <h3>ELDEATHA</h3>
+                    <p>Creator of NEKYA.</p>
+
+                    <a
+                        href="https://www.roblox.com/users/1854066173/profile"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="developer-button"
+                    >
+                        ROBLOX PROFILE ↗
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =================================================
+             STATUS
+        ================================================== -->
+        <section id="status" class="section reveal" data-section="status">
+            <p class="section-number">06 // SYSTEM</p>
+            <h2>CURRENT <span>STATUS.</span></h2>
+            <div class="section-line"></div>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-lights">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <p>NEKYA_CORE.exe</p>
+                </div>
+
+                <div class="terminal-body">
+                    <p><b>&gt;</b> PROJECT ............. <span>NEKYA</span></p>
+                    <p><b>&gt;</b> BUILD ............... <span>0.1.03</span></p>
+                    <p><b>&gt;</b> STATUS .............. <span>IN DEVELOPMENT</span></p>
+                    <p><b>&gt;</b> COMPLEX SYSTEM ...... <span>ONLINE</span></p>
+                    <p><b>&gt;</b> ARCHIVE ............. <span id="archive-status">PARTIAL</span></p>
+                    <p><b>&gt;</b> UNKNOWN DATA ........ <span id="unknown-status">LOCKED</span></p>
+                    <p class="terminal-animation">
+                        <b>&gt;</b> <span id="terminal-text"></span><i>█</i>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
     <footer>
-        <div><strong>NEKYA</strong><p>CREATED BY ELDEATHA</p></div>
-        <div class="footer-center"><span>BUILD 0.1</span><span>//</span><span>SYSTEM ONLINE</span></div>
+        <div>
+            <strong>NEKYA</strong>
+            <p>CREATED BY ELDEATHA</p>
+        </div>
+
+        <div class="footer-center">
+            <span>BUILD 0.1.03</span>
+            <span>//</span>
+            <span>SYSTEM ONLINE</span>
+        </div>
+
         <p class="footer-text">THE MIND REMEMBERS.</p>
     </footer>
 
-    <div id="complex-overlay" class="complex-overlay" aria-hidden="true">
-        <div class="complex-dossier">
-            <button id="close-dossier" class="overlay-close" aria-label="Close dossier">×</button>
+
+    <!-- =====================================================
+         COMPLEX DOSSIER
+    ====================================================== -->
+    <div id="complex-overlay" class="modal-layer" aria-hidden="true">
+        <div class="complex-dossier" role="dialog" aria-modal="true" aria-labelledby="dossier-name">
+            <button id="close-dossier" class="overlay-close" type="button" aria-label="Close dossier">×</button>
+
             <div class="dossier-topline">
                 <p id="dossier-id">CX-01 // DOSSIER</p>
                 <span id="dossier-status">ACTIVE FILE</span>
             </div>
+
             <div class="dossier-title-row">
-                <div><p class="dossier-label">COMPLEX</p><h2 id="dossier-name">DRIVE</h2></div>
-                <div class="dossier-rarity"><p>RARITY</p><strong id="dossier-rarity">FAINT</strong></div>
+                <div>
+                    <p class="dossier-label">COMPLEX</p>
+                    <h2 id="dossier-name">DRIVE</h2>
+                </div>
+
+                <div class="dossier-rarity">
+                    <p>RARITY</p>
+                    <strong id="dossier-rarity">FAINT</strong>
+                </div>
             </div>
+
             <div class="dossier-divider"></div>
+
             <div class="dossier-grid">
-                <div class="dossier-block wide"><p>CONCEPT</p><h3 id="dossier-concept">Forward pressure</h3></div>
-                <div class="dossier-block"><p>STATUS</p><span id="dossier-dev-status">IN DEVELOPMENT</span></div>
-                <div class="dossier-block"><p>CLASSIFICATION</p><span id="dossier-classification">PSYCHOLOGICAL MANIFESTATION</span></div>
-                <div class="dossier-block wide"><p>DESCRIPTION</p><span id="dossier-description"></span></div>
-                <div class="dossier-block wide"><p>ABILITY DATA</p><ul id="dossier-abilities"></ul></div>
-                <div class="dossier-block corrupted-block wide"><p>CORRUPTED DATA</p><span id="dossier-corruption">NO CORRUPTION DETECTED.</span></div>
+                <div class="dossier-block wide">
+                    <p>CONCEPT</p>
+                    <h3 id="dossier-concept">Forward pressure</h3>
+                </div>
+
+                <div class="dossier-block">
+                    <p>STATUS</p>
+                    <span id="dossier-dev-status">IN DEVELOPMENT</span>
+                </div>
+
+                <div class="dossier-block">
+                    <p>CLASSIFICATION</p>
+                    <span id="dossier-classification">PSYCHOLOGICAL MANIFESTATION</span>
+                </div>
+
+                <div class="dossier-block wide">
+                    <p>DESCRIPTION</p>
+                    <span id="dossier-description"></span>
+                </div>
+
+                <div class="dossier-block wide">
+                    <p>ABILITY DATA</p>
+                    <ul id="dossier-abilities"></ul>
+                </div>
+
+                <div class="dossier-block corrupted-block wide">
+                    <p>CORRUPTED DATA</p>
+                    <span id="dossier-corruption">NO CORRUPTION DETECTED.</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="secret-overlay" class="secret-overlay">
-        <div class="secret-window">
-            <button id="close-secret" class="secret-close">×</button>
+
+    <!-- =====================================================
+         SECRET OVERLAY
+    ====================================================== -->
+    <div id="secret-overlay" class="modal-layer secret-overlay" aria-hidden="true">
+        <div class="secret-window" role="dialog" aria-modal="true">
+            <button id="close-secret" class="overlay-close" type="button" aria-label="Close secret file">×</button>
             <p class="secret-file">FILE // ???</p>
             <h2>OBSERVATION <span>DETECTED.</span></h2>
             <div class="secret-divider"></div>
-            <p class="secret-message">You kept looking.<br><br>Most would have stopped.<br><br>Something beneath the Complex system has noticed you.</p>
+
+            <p class="secret-message">
+                You kept looking.
+                <br><br>
+                Most would have stopped.
+                <br><br>
+                Something beneath the Complex system has noticed you.
+            </p>
+
             <p class="secret-clue">U M B R A</p>
             <p class="secret-warning">THIS IS NOT A NAME.</p>
         </div>
     </div>
 
-    <div id="command-console" class="command-console" aria-hidden="true">
-        <div class="command-window">
-            <div class="command-header"><span>NEKYA COMMAND INTERFACE</span><button id="close-console">ESC</button></div>
+
+    <!-- =====================================================
+         COMMAND CONSOLE
+    ====================================================== -->
+    <div id="command-console" class="modal-layer command-console" aria-hidden="true">
+        <div class="command-window" role="dialog" aria-modal="true" aria-label="NEKYA command interface">
+            <div class="command-header">
+                <span>NEKYA COMMAND INTERFACE</span>
+                <button id="close-console" type="button">ESC</button>
+            </div>
+
             <div id="command-output" class="command-output">
                 <p><b>NEKYA://</b> interface ready.</p>
                 <p>Type <strong>help</strong> for available commands.</p>
             </div>
+
             <form id="command-form" class="command-input-row" autocomplete="off">
                 <span>NEKYA://&gt;</span>
-                <input id="command-input" type="text" spellcheck="false" aria-label="Command input">
+                <input
+                    id="command-input"
+                    type="text"
+                    spellcheck="false"
+                    aria-label="Command input"
+                    placeholder="type a command..."
+                >
             </form>
         </div>
     </div>
 
-    <div id="decrypt-overlay" class="decrypt-overlay">
-        <div>
+
+    <!-- =====================================================
+         DECRYPT OVERLAY
+    ====================================================== -->
+    <div id="decrypt-overlay" class="modal-layer decrypt-overlay" aria-hidden="true">
+        <div class="decrypt-window">
             <p>ARCHIVE ACCESS</p>
             <h2 id="decrypt-text">DECRYPTING...</h2>
+            <div class="decrypt-bar"><span id="decrypt-bar-fill"></span></div>
             <span id="decrypt-progress">0%</span>
         </div>
     </div>
 
-    <div id="system-toast" class="system-toast"><p>SYSTEM</p><span id="toast-text">ARCHIVE UPDATED</span></div>
 
-    <script src="script.js"></script>
+    <!-- =====================================================
+         TOAST
+    ====================================================== -->
+    <div id="system-toast" class="system-toast" aria-live="polite">
+        <p>SYSTEM</p>
+        <span id="toast-text">ARCHIVE UPDATED</span>
+    </div>
+
+
+    <script src="script.js?v=stable-3"></script>
 </body>
 </html>
