@@ -24,6 +24,7 @@
     };
 
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const I18N = window.NEKYA_I18N || null;
 
     /* =====================================================
        SAFE PERSISTENT STATE
@@ -32,9 +33,11 @@
     const STORAGE_KEY = "nekyaStateStable3";
     const LEGACY_THEME_KEY = "nekyaTheme";
     const LEGACY_SECRET_KEY = "nekyaSecretUnlocked";
+    const LEGACY_LANGUAGE_KEY = "nekyaLanguage";
 
     const defaultState = {
         theme: "dark",
+        language: "",
         secretUnlocked: false,
         discoveredComplexes: [],
         openedRecords: [],
@@ -79,6 +82,10 @@
         };
 
         state.theme = state.theme === "fracture" ? "fracture" : "dark";
+        const storedLanguage = state.language || safeStorageGet(LEGACY_LANGUAGE_KEY);
+        state.language = I18N
+            ? I18N.normalizeLocale(storedLanguage || I18N.detectLocale())
+            : "en-US";
         state.secretUnlocked = Boolean(state.secretUnlocked);
         state.discoveredComplexes = sanitizeArray(state.discoveredComplexes);
         state.openedRecords = sanitizeArray(state.openedRecords);
@@ -102,10 +109,19 @@
 
     const state = loadState();
 
+    function tr(path, params = {}) {
+        return I18N ? I18N.t(state.language, path, params) : path;
+    }
+
+    function rawTr(path) {
+        return I18N ? I18N.raw(state.language, path) : undefined;
+    }
+
     function saveState() {
         safeStorageSet(STORAGE_KEY, JSON.stringify(state));
         safeStorageSet(LEGACY_THEME_KEY, state.theme);
         safeStorageSet(LEGACY_SECRET_KEY, String(state.secretUnlocked));
+        safeStorageSet(LEGACY_LANGUAGE_KEY, state.language);
     }
 
     function addUnique(list, value) {
@@ -121,6 +137,8 @@
 
     function init() {
         applyTheme(false);
+        initLanguage();
+        applyLanguage(false);
         initBoot();
         initCursor();
         initGlitch();
@@ -147,7 +165,76 @@
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", init, { once: true });
     } else {
-        init();
+        queueMicrotask(init);
+    }
+
+    /* =====================================================
+       LANGUAGE / LOCALIZATION
+    ====================================================== */
+
+    let activeDossierKey = null;
+
+    function initLanguage() {
+        const control = $("#language-control");
+        const toggle = $("#language-toggle");
+        const menu = $("#language-menu");
+
+        safeOn(toggle, "click", event => {
+            event.stopPropagation();
+            const open = !menu?.classList.contains("open");
+            menu?.classList.toggle("open", open);
+            toggle?.classList.toggle("open", open);
+            toggle?.setAttribute("aria-expanded", String(open));
+        });
+
+        $$("[data-language]", menu || document).forEach(button => {
+            safeOn(button, "click", () => {
+                const locale = I18N ? I18N.normalizeLocale(button.dataset.language) : "en-US";
+                state.language = locale;
+                saveState();
+                applyLanguage(true);
+                menu?.classList.remove("open");
+                toggle?.classList.remove("open");
+                toggle?.setAttribute("aria-expanded", "false");
+            });
+        });
+
+        document.addEventListener("click", event => {
+            if (!control || control.contains(event.target)) return;
+            menu?.classList.remove("open");
+            toggle?.classList.remove("open");
+            toggle?.setAttribute("aria-expanded", "false");
+        });
+    }
+
+    function applyLanguage(showMessage = true) {
+        if (!I18N) return;
+
+        I18N.applyStatic(state.language);
+
+        const meta = I18N.meta(state.language);
+        safeText("#language-current", meta.short);
+
+        $$("[data-language]").forEach(button => {
+            button.classList.toggle("active", button.dataset.language === state.language);
+            button.setAttribute("aria-checked", String(button.dataset.language === state.language));
+        });
+
+        applyTheme(false);
+        restoreObservedWorlds();
+        updateLoreState();
+        restoreSecretState();
+        resetCommandOutput();
+
+        if (activeDossierKey && complexOverlay?.classList.contains("active")) {
+            renderDossier(activeDossierKey);
+        }
+
+        if (showMessage) {
+            showToast(tr("toasts.language", { language: meta.label }));
+        }
+
+        saveState();
     }
 
     /* =====================================================
@@ -172,13 +259,13 @@
         }
 
         if (themeToggle) {
-            const nextTheme = fracture ? "dark" : "light";
-            themeToggle.title = `Switch to ${nextTheme} mode`;
-            themeToggle.setAttribute("aria-label", `Switch to ${nextTheme} mode`);
+            const label = fracture ? tr("ui.switchDark") : tr("ui.switchLight");
+            themeToggle.title = label;
+            themeToggle.setAttribute("aria-label", label);
         }
 
         if (showMessage) {
-            showToast(fracture ? "FRACTURE LIGHT MODE ENABLED" : "DARK MODE RESTORED");
+            showToast(fracture ? tr("toasts.light") : tr("toasts.dark"));
         }
     }
 
@@ -464,22 +551,13 @@
         const terminalText = $("#terminal-text");
         if (!terminalText) return;
 
-        const messages = [
-            "SCANNING PSYCHE...",
-            "COMPLEX SIGNATURE DETECTED.",
-            "SEARCHING ARCHIVE...",
-            "MEMORY FRAGMENT FOUND.",
-            "UNKNOWN RECORD CORRUPTED.",
-            "SOMETHING IS WATCHING.",
-            "DO NOT TRUST EMPTY DATA."
-        ];
-
         let messageIndex = 0;
         let characterIndex = 0;
         let deleting = false;
 
         const tick = () => {
-            const current = messages[messageIndex];
+            const messages = I18N ? I18N.terminalMessages(state.language) : ["SCANNING PSYCHE..."];
+            const current = messages[messageIndex % messages.length];
 
             if (!deleting) {
                 terminalText.textContent = current.slice(0, characterIndex + 1);
@@ -527,15 +605,16 @@
                 addUnique(state.milestones, "world_observed");
 
                 card.classList.add("observed");
-                safeText($("small", card), "OBSERVED");
+                safeText($("small", card), tr("world.observed"));
 
                 saveState();
                 updateLoreState();
 
+                const worldName = I18N ? I18N.worldName(state.language, world) : world.toUpperCase();
                 showToast(
                     wasNew
-                        ? `${world.toUpperCase()} OBSERVED // ARCHIVE UPDATED`
-                        : `${world.toUpperCase()} ALREADY OBSERVED`
+                        ? tr("toasts.worldObserved", { world: worldName })
+                        : tr("toasts.worldAlready", { world: worldName })
                 );
             });
         });
@@ -547,7 +626,10 @@
 
             if (world && state.observedWorlds.includes(world)) {
                 card.classList.add("observed");
-                safeText($("small", card), "OBSERVED");
+                safeText($("small", card), tr("world.observed"));
+            } else {
+                card.classList.remove("observed");
+                safeText($("small", card), tr("world.observe"));
             }
         });
     }
@@ -680,11 +762,13 @@
         });
     }
 
-    function openDossier(key) {
-        const data = complexData[key];
-        if (!data || !complexOverlay) return;
+    function renderDossier(key) {
+        const baseData = complexData[key];
+        const localized = I18N ? I18N.complex(state.language, key) : null;
+        const data = localized ? { ...baseData, ...localized } : baseData;
+        if (!data) return;
 
-        safeText("#dossier-id", `${data.id} // DOSSIER`);
+        safeText("#dossier-id", `${data.id} // ${tr("dossier.dossier")}`);
         safeText("#dossier-name", data.name);
         safeText("#dossier-rarity", data.rarity);
         safeText("#dossier-concept", data.concept);
@@ -692,18 +776,25 @@
         safeText("#dossier-classification", data.classification);
         safeText("#dossier-description", data.description);
         safeText("#dossier-corruption", data.corruption);
-        safeText("#dossier-status", "ACTIVE FILE");
+        safeText("#dossier-status", tr("dossier.activeFile"));
 
         const list = $("#dossier-abilities");
         if (list) {
             list.innerHTML = "";
-
-            data.abilities.forEach(item => {
+            (data.abilities || []).forEach(item => {
                 const li = document.createElement("li");
                 li.textContent = item;
                 list.appendChild(li);
             });
         }
+    }
+
+    function openDossier(key) {
+        const baseData = complexData[key];
+        if (!baseData || !complexOverlay) return;
+
+        activeDossierKey = key;
+        renderDossier(key);
 
         const firstTime = !state.discoveredComplexes.includes(key);
 
@@ -717,11 +808,13 @@
         openModal(complexOverlay);
 
         if (firstTime) {
-            showToast(`${data.id} ${data.name} // DOSSIER RECOVERED`);
+            const name = I18N ? I18N.complexName(state.language, key) : baseData.name;
+            showToast(tr("toasts.dossierRecovered", { id: baseData.id, name }));
         }
     }
 
     function closeDossier() {
+        activeDossierKey = null;
         closeModal(complexOverlay);
     }
 
@@ -732,12 +825,14 @@
     let secretOverlay = null;
     let secretClicks = 0;
 
-    const secretStages = [
-        "SIGNAL DISTURBED",
-        "SOMETHING RESPONDED",
-        "DO NOT CONTINUE",
-        "OBSERVATION DETECTED"
-    ];
+    function currentSecretStages() {
+        return I18N ? I18N.secretStages(state.language) : [
+            "SIGNAL DISTURBED",
+            "SOMETHING RESPONDED",
+            "DO NOT CONTINUE",
+            "OBSERVATION DETECTED"
+        ];
+    }
 
     function initSecretSystem() {
         secretOverlay = $("#secret-overlay");
@@ -757,16 +852,18 @@
             if (secretCard) void secretCard.offsetWidth;
             secretCard?.classList.add("secret-disturb");
 
+            const secretStages = currentSecretStages();
+
             if (secretClicks <= secretStages.length) {
                 safeText("#secret-signal", secretStages[secretClicks - 1]);
             }
 
             if (secretClicks === 1) {
-                showToast("UNKNOWN SIGNAL DISTURBED");
+                showToast(tr("secret.disturbed"));
             }
 
             if (secretClicks === 2) {
-                safeText("#secret-description", "DATA IS MOVING.");
+                safeText("#secret-description", tr("secret.moving"));
             }
 
             if (secretClicks === 3) {
@@ -774,7 +871,7 @@
             }
 
             if (secretClicks === 4) {
-                safeText("#secret-description", "STOP OBSERVING.");
+                safeText("#secret-description", tr("secret.stop"));
                 glitch();
             }
 
@@ -804,7 +901,7 @@
         updateLoreState();
 
         if (wasLocked) {
-            showToast("CX-?? // UNKNOWN ARCHIVE UNLOCKED");
+            showToast(tr("secret.unlocked"));
         }
 
         window.setTimeout(openSecretOverlay, 260);
@@ -814,15 +911,12 @@
         if (!state.secretUnlocked) return;
 
         $("#secret-card")?.classList.add("unlocked");
-        safeText("#secret-title", "OBSERVED");
-        safeText("#secret-description", "THE SIGNAL REMEMBERS YOU.");
-        safeText("#secret-signal", "ACCESS GRANTED");
-        safeText("#unknown-status", "OBSERVED");
-        safeText("#restricted-status", "RECOVERED");
-        safeText(
-            "#restricted-text",
-            "The archive remembers what was removed. The signal does not identify itself. One fragment remains: U M B R A."
-        );
+        safeText("#secret-title", tr("common.observed"));
+        safeText("#secret-description", tr("secret.remembers"));
+        safeText("#secret-signal", tr("common.accessGranted"));
+        safeText("#unknown-status", tr("common.observed"));
+        safeText("#restricted-status", tr("common.recovered"));
+        safeText("#restricted-text", tr("archive.unknown.recovered"));
     }
 
     function openSecretOverlay() {
@@ -872,8 +966,8 @@
             glitch();
             showToast(
                 requirement === "secret"
-                    ? "RESTRICTED FILE // ACCESS DENIED"
-                    : "ARCHIVE CONDITION NOT MET"
+                    ? tr("toasts.restrictedDenied")
+                    : tr("toasts.condition")
             );
             return;
         }
@@ -908,7 +1002,7 @@
         openModal(decryptOverlay, false);
         decryptOverlay.setAttribute("aria-hidden", "false");
 
-        safeText("#decrypt-text", "DECRYPTING...");
+        safeText("#decrypt-text", tr("decrypt.decrypting"));
         safeText("#decrypt-progress", "0%");
 
         const bar = $("#decrypt-bar-fill");
@@ -927,7 +1021,7 @@
             if (progress < 100) return;
 
             window.clearInterval(timer);
-            safeText("#decrypt-text", "ACCESS GRANTED");
+            safeText("#decrypt-text", tr("decrypt.granted"));
 
             window.setTimeout(() => {
                 decryptBusy = false;
@@ -953,16 +1047,16 @@
             if (!status) return;
 
             if (!unlocked) {
-                status.textContent = recordId === "unknown" ? "RESTRICTED" : "LOCKED";
+                status.textContent = recordId === "unknown" ? tr("common.restricted") : tr("common.locked");
                 return;
             }
 
             if (recordId === "unknown") {
-                status.textContent = "RECOVERED";
+                status.textContent = tr("common.recovered");
             } else if (recordId === "003") {
-                status.textContent = "PARTIAL";
+                status.textContent = tr("common.partial");
             } else {
-                status.textContent = "AVAILABLE";
+                status.textContent = tr("common.available");
             }
         });
 
@@ -973,8 +1067,8 @@
 
         const percent = Math.round((unlockedCount / total) * 100);
 
-        safeText("#archive-integrity", `ARCHIVE INTEGRITY // ${percent}%`);
-        safeText("#archive-status", percent >= 100 ? "RECOVERED" : "PARTIAL");
+        safeText("#archive-integrity", tr("archive.integrity", { percent }));
+        safeText("#archive-status", percent >= 100 ? tr("common.recovered") : tr("common.partial"));
 
         if (state.secretUnlocked) {
             restoreSecretState();
@@ -1014,6 +1108,35 @@
             commandInput.value = "";
             executeCommand(value);
         });
+
+        resetCommandOutput();
+    }
+
+    function resetCommandOutput() {
+        if (!commandOutput) return;
+        commandOutput.innerHTML = "";
+        printCommand(`<b>NEKYA://</b> ${escapeHtml(tr("console.ready"))}`);
+        printCommand(tr("console.helpHint"));
+    }
+
+    function resolveComplexKey(value) {
+        const normalized = String(value || "")
+            .trim()
+            .toLocaleLowerCase(state.language)
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+
+        for (const key of Object.keys(complexData)) {
+            const internal = key.toLowerCase();
+            const localized = String(I18N ? I18N.complexName(state.language, key) : complexData[key].name)
+                .toLocaleLowerCase(state.language)
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+
+            if (normalized === internal || normalized === localized) return key;
+        }
+
+        return null;
     }
 
     function openCommandConsole() {
@@ -1056,46 +1179,52 @@
         printCommand(`<b>NEKYA://&gt;</b> ${escapeHtml(input)}`);
 
         if (command === "help") {
-            printCommand(
-                "commands: <strong>help</strong>, <strong>complexes</strong>, <strong>archive</strong>, <strong>status</strong>, <strong>found</strong>, <strong>theme</strong>, <strong>clear</strong>, <strong>???</strong>, <strong>open &lt;complex&gt;</strong>"
-            );
+            printCommand(tr("console.commands"));
             return;
         }
 
         if (command === "complexes") {
-            printCommand(
-                "CX-01 DRIVE // CX-02 APATHY // CX-03 IMPRINT // CX-04 FIXATION // CX-05 PROJECTION // CX-06 SHADOW // CX-?? UNKNOWN"
-            );
+            const line = ["drive", "apathy", "imprint", "fixation", "projection", "shadow"]
+                .map(key => `${complexData[key].id} ${I18N ? I18N.complexName(state.language, key) : complexData[key].name}`)
+                .join(" // ");
+            printCommand(`${escapeHtml(line)} // CX-?? ${escapeHtml(tr("common.unknown"))}`);
             return;
         }
 
         if (command === "archive") {
-            const integrity = $("#archive-integrity")?.textContent || "ARCHIVE INTEGRITY // UNKNOWN";
-            printCommand(
-                `records opened: ${state.openedRecords.length}/${Math.max(archiveRecords.length, 4)} // ${escapeHtml(integrity)}`
-            );
+            const integrity = $("#archive-integrity")?.textContent || tr("archive.integrity", { percent: "?" });
+            printCommand(tr("console.recordsOpened", {
+                opened: state.openedRecords.length,
+                total: Math.max(archiveRecords.length, 4),
+                integrity: escapeHtml(integrity)
+            }));
             return;
         }
 
         if (command === "status") {
-            printCommand(
-                `build 0.1.03 // complex files observed ${state.discoveredComplexes.length}/7 // unknown data ${state.secretUnlocked ? "OBSERVED" : "LOCKED"}`
-            );
+            printCommand(tr("console.statusLine", {
+                count: state.discoveredComplexes.length,
+                unknown: state.secretUnlocked ? tr("common.observed") : tr("common.locked")
+            }));
             return;
         }
 
         if (command === "found") {
             const found = state.discoveredComplexes.length
-                ? state.discoveredComplexes.map(value => value.toUpperCase()).join(", ")
-                : "NONE";
+                ? state.discoveredComplexes.map(value => {
+                    if (value === "unknown") return "???";
+                    return I18N ? I18N.complexName(state.language, value) : value.toUpperCase();
+                }).join(", ")
+                : tr("console.none");
 
-            printCommand(`discovered complex files: ${escapeHtml(found)}`);
+            printCommand(tr("console.found", { found: escapeHtml(found) }));
             return;
         }
 
         if (command === "theme") {
             toggleTheme();
-            printCommand(`theme changed to ${state.theme.toUpperCase()}`, "command-success");
+            const themeName = state.theme === "fracture" ? "FRACTURE" : "DARK";
+            printCommand(tr("console.themeChanged", { theme: themeName }), "command-success");
             return;
         }
 
@@ -1106,37 +1235,36 @@
 
         if (command === "???") {
             if (state.secretUnlocked) {
-                printCommand("OBSERVATION CONFIRMED. U M B R A // THIS IS NOT A NAME.");
+                printCommand(tr("console.observedUmbra"));
                 glitch();
             } else {
-                printCommand(
-                    "ACCESS DENIED. THE SIGNAL HAS NOT OBSERVED YOU.",
-                    "command-error"
-                );
+                printCommand(tr("console.secretDenied"), "command-error");
             }
             return;
         }
 
-        if (command.startsWith("open ")) {
-            const key = command.slice(5).trim();
+        const openMatch = input.match(/^(?:open|atvērt|открыть|abrir|öffnen|ouvrir|otwórz)\s+(.+)$/i);
+        if (openMatch) {
+            const requested = openMatch[1].trim();
+            const key = resolveComplexKey(requested);
 
-            if (complexData[key]) {
+            if (key && complexData[key]) {
                 closeCommandConsole();
                 window.setTimeout(() => openDossier(key), 80);
-            } else if (key === "unknown" || key === "???") {
+            } else if (requested === "unknown" || requested === "???") {
                 if (state.secretUnlocked) {
                     closeCommandConsole();
                     window.setTimeout(openSecretOverlay, 80);
                 } else {
-                    printCommand("UNKNOWN FILE IS LOCKED.", "command-error");
+                    printCommand(tr("console.unknownLocked"), "command-error");
                 }
             } else {
-                printCommand("unknown file.", "command-error");
+                printCommand(tr("console.unknownFile"), "command-error");
             }
             return;
         }
 
-        printCommand("unknown command. type help.", "command-error");
+        printCommand(tr("console.unknownCommand"), "command-error");
     }
 
     function escapeHtml(value) {

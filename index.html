@@ -8,7 +8,7 @@
     <title>NEKYA</title>
 
     <!-- Cache-busting version parameter prevents GitHub Pages/browser cache mismatches. -->
-    <link rel="stylesheet" href="style.css?v=stable-3">
+    <link rel="stylesheet" href="style.css?v=stable-4-lang">
 </head>
 <body>
 
@@ -75,6 +75,33 @@
         </div>
 
         <div class="nav-controls">
+            <div class="language-control" id="language-control">
+                <button
+                    id="language-toggle"
+                    class="language-toggle"
+                    type="button"
+                    aria-label="Choose language"
+                    aria-expanded="false"
+                    title="Language"
+                >
+                    <span class="language-globe">◎</span>
+                    <span id="language-current">EN-US</span>
+                    <span class="language-chevron">⌄</span>
+                </button>
+
+                <div id="language-menu" class="language-menu" role="menu" aria-label="Language">
+                    <button type="button" role="menuitemradio" data-language="en-US"><span>English</span><small>US</small></button>
+                    <button type="button" role="menuitemradio" data-language="en-GB"><span>English</span><small>UK</small></button>
+                    <button type="button" role="menuitemradio" data-language="ru-RU"><span>Русский</span><small>RU</small></button>
+                    <button type="button" role="menuitemradio" data-language="lv-LV"><span>Latviešu</span><small>LV</small></button>
+                    <button type="button" role="menuitemradio" data-language="es-ES"><span>Español</span><small>ES</small></button>
+                    <button type="button" role="menuitemradio" data-language="pt-BR"><span>Português</span><small>BR</small></button>
+                    <button type="button" role="menuitemradio" data-language="de-DE"><span>Deutsch</span><small>DE</small></button>
+                    <button type="button" role="menuitemradio" data-language="fr-FR"><span>Français</span><small>FR</small></button>
+                    <button type="button" role="menuitemradio" data-language="pl-PL"><span>Polski</span><small>PL</small></button>
+                </div>
+            </div>
+
             <button
                 id="theme-toggle"
                 class="icon-button theme-toggle"
@@ -446,9 +473,15 @@
                 </div>
 
                 <div class="update-entry">
+                    <span>0.1.04</span>
+                    <p>Multilingual interface and full localization system added.</p>
+                    <b>CURRENT</b>
+                </div>
+
+                <div class="update-entry">
                     <span>0.1.03</span>
                     <p>Website interface rebuilt and stabilized.</p>
-                    <b>CURRENT</b>
+                    <b>COMPLETE</b>
                 </div>
 
                 <div class="update-entry">
@@ -461,12 +494,6 @@
                     <span>0.1.01</span>
                     <p>Apathy combat presentation and supporting effects developed.</p>
                     <b>IN PROGRESS</b>
-                </div>
-
-                <div class="update-entry">
-                    <span>0.1.00</span>
-                    <p>Core NEKYA foundation established.</p>
-                    <b>FOUNDATION</b>
                 </div>
             </div>
         </section>
@@ -540,7 +567,7 @@
 
                 <div class="terminal-body">
                     <p><b>&gt;</b> PROJECT ............. <span>NEKYA</span></p>
-                    <p><b>&gt;</b> BUILD ............... <span>0.1.03</span></p>
+                    <p><b>&gt;</b> BUILD ............... <span>0.1.04</span></p>
                     <p><b>&gt;</b> STATUS .............. <span>IN DEVELOPMENT</span></p>
                     <p><b>&gt;</b> COMPLEX SYSTEM ...... <span>ONLINE</span></p>
                     <p><b>&gt;</b> ARCHIVE ............. <span id="archive-status">PARTIAL</span></p>
@@ -564,7 +591,7 @@
         </div>
 
         <div class="footer-center">
-            <span>BUILD 0.1.03</span>
+            <span>BUILD 0.1.04</span>
             <span>//</span>
             <span>SYSTEM ONLINE</span>
         </div>
@@ -709,6 +736,7 @@
     </div>
 
 
-    <script src="script.js?v=stable-3"></script>
+    <script src="i18n.js?v=stable-4-lang"></script>
+    <script src="script.js?v=stable-4-lang"></script>
 </body>
 </html>

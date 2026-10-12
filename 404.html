@@ -97,6 +97,14 @@
             line-height: 1.8;
         }
 
+        .signal {
+            margin-top: 18px;
+            color: var(--red);
+            font-family: monospace;
+            font-size: 9px;
+            letter-spacing: 3px;
+        }
+
         a {
             display: inline-block;
             margin-top: 32px;
@@ -125,35 +133,52 @@
         }
     </style>
 
+    <script src="i18n.js?v=stable-4-lang"></script>
     <script>
-        try {
-            const legacyTheme = localStorage.getItem("nekyaTheme");
-            const stableState = JSON.parse(localStorage.getItem("nekyaStateStable3") || "{}");
-            const theme = stableState.theme || legacyTheme;
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                const stableState = JSON.parse(localStorage.getItem("nekyaStateStable3") || "{}");
+                const legacyTheme = localStorage.getItem("nekyaTheme");
+                const theme = stableState.theme || legacyTheme;
 
-            if (theme === "fracture") {
-                document.addEventListener("DOMContentLoaded", () => {
+                if (theme === "fracture") {
                     document.body.classList.add("fracture-theme");
                     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#e9e5de");
-                });
+                }
+
+                const i18n = window.NEKYA_I18N;
+                const savedLanguage = stableState.language || localStorage.getItem("nekyaLanguage");
+                const locale = i18n
+                    ? i18n.normalizeLocale(savedLanguage || i18n.detectLocale())
+                    : "en-US";
+
+                if (i18n) {
+                    document.documentElement.lang = locale;
+                    document.title = `${i18n.t(locale, "404.title")} // NEKYA`;
+                    document.getElementById("error-code").textContent = i18n.t(locale, "404.code");
+                    document.getElementById("error-title").textContent = i18n.t(locale, "404.title");
+                    document.getElementById("error-message").textContent = i18n.t(locale, "404.message");
+                    document.getElementById("error-return").textContent = i18n.t(locale, "404.return");
+                    document.getElementById("error-signal").textContent = i18n.t(locale, "404.signal");
+                }
+            } catch (error) {
+                // The 404 page remains usable even if storage/localization is unavailable.
             }
-        } catch (error) {
-            // 404 page remains usable without storage.
-        }
+        });
     </script>
 </head>
 <body>
     <div class="grid"></div>
 
     <main>
-        <p class="code">ERROR // MEMORY INDEX FAILURE</p>
-        <h1>MEMORY <span>NOT FOUND.</span></h1>
+        <p class="code" id="error-code">ERROR // 404</p>
+        <h1 id="error-title">MEMORY NOT FOUND</h1>
         <div class="line"></div>
-        <p>
-            The requested record does not exist, has been moved,
-            or was removed from the archive.
+        <p id="error-message">
+            The requested record does not exist, has been removed, or was never meant to be accessed.
         </p>
-        <a href="/nekya-website/">RETURN TO NEKYA</a>
+        <p class="signal" id="error-signal">SIGNAL LOST</p>
+        <a id="error-return" href="/nekya-website/">RETURN TO NEKYA</a>
     </main>
 </body>
 </html>
